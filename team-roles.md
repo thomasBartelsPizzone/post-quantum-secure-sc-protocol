@@ -1,4 +1,4 @@
-# docs/team-roles-and-responsibilities.md
+# team_roles-and-responsibilities.md
 
 # Team Roles & Responsibilities  
 **PQ-NFT-USG Systems Engineering Team**  
