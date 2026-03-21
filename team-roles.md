@@ -1,5 +1,3 @@
-# team_roles-and-responsibilities.md
-
 # Team Roles & Responsibilities  
 **PQ-NFT-USG Systems Engineering Team**  
 **Team Size**: Exactly 3 (Integrated Product Team – IPT)  
