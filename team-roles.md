@@ -1,54 +1,55 @@
+# docs/team-roles-and-responsibilities.md
+
 # Team Roles & Responsibilities  
-**PQ-NFT-USG Project** (3-person core team)
+**PQ-NFT-USG Systems Engineering Team**  
+**Team Size**: Exactly 3 (Integrated Product Team – IPT)  
+**Document Status**: Baseline v0.1 (March 2026)
 
-The team is structured using classic systems-engineering roles with clear allocation of requirements, verification, and configuration management responsibilities.
+## 1. Equipment Integration Engineer
+**Current Role**: Technical Lead – Middleware Integration  
+**Focus Areas**:
+- Systems Integration of cryptographic primitives with off-chain provers
+- Communication protocol design (ERC-4337 account abstraction, external message relays for TON)
+- zk-STARK circuit implementation and recursive aggregation
+- leanVM mitigation approaches (modular verifier interface, RISC Zero/SP1 bridge)
+- Smart-contract development (Solidity / FunC)
 
-## 1. Back-End Engineer (Middleware & Communication Protocols)
-**Primary Focus**  
-- Requirements analysis and allocation for the cryptographic and blockchain interface layers  
-- Design and implementation of middleware (issuance CLI, proof submission pipeline, cross-chain relay adapters)  
-- Communication-protocol definition (JSON proof payload ICD, ERC-4337 user-operation format, TON external-message schema)  
-
-**Research Responsibilities**  
-- Cryptographic primitives integration (FIPS 203/204/205 binding into Rust/RISC-V circuits)  
-- zk components (STARK circuit authoring in SP1/leanVM ISA)  
-- leanVM mitigation approaches (bridge vs. native verifier trade study and upgradeable proxy design)  
-
-**Additional Duties**  
-- Authoring of protocol specification sections related to interfaces and data flows  
-- Drafting of solution architecture diagrams and functional decomposition  
-- **Future Role Evolution**: May assume Project Manager / Chief Architect responsibilities (technical baseline control, trade-study leadership) starting Phase 3.
+**Future Evolution**: May transition to **Chief Architect** (Phase 3+) responsible for overall technical baseline, interface control documents (ICDs), and Configuration Management (CM).
 
 ## 2. Cybersecurity Admin
-**Primary Focus**  
-- Security requirements development and verification  
-- Threat modeling, risk assessment, and mitigation planning (quantum and classical attack vectors)  
-- Key-management CONOPS and governance model for USG issuer public-key registry  
+**Current Role**: Information Assurance & Cryptographic Authority  
+**Focus Areas**:
+- Research and validation of cryptographic primitives (FIPS 203/204/205, liboqs/PQClean bindings)
+- Security requirements definition (SRD) and threat analysis (quantum + classical)
+- zk component verification (STARK soundness proofs, side-channel resistance)
+- leanVM mitigation security assessment
+- Risk Management Board (RMB) participation
 
-**Research Responsibilities**  
-- Cryptographic primitives security analysis (side-channel resistance, hybrid classical/PQ schemes)  
-- zk components soundness (zk-STARK security proofs, recursion depth analysis)  
-- leanVM mitigation approaches from a security viewpoint (trusted vs. transparent setups, formal verification of verifier contract)  
+## 3. Manufacturing Productivity Engineer
+**Current Role**: Systems Analyst & Control Account Support  
+**Focus Areas**:
+- Research authoring and drafting of protocol specification
+- Solution architecture drafts (high-level & detailed views)
+- Database / storage layer design (IPFS + Arweave integration)
+- Project planning, scheduling, and Earned Value Management (EVM) tracking
+- Benchmarking, trade studies, and verification planning
 
-**Additional Duties**  
-- Co-authoring of protocol specification security model and threat-analysis sections  
-- Review and approval of all solution-architecture drafts for compliance with CISA/NSA PQ guidance and FedRAMP considerations.
+**Future Evolution**: May transition to **Control Account Manager (CAM)** (Phase 2+) responsible for cost, schedule, and technical performance baselines under Earned Value Management System (EVMS).
 
-## 3. Manufacturing Productivity Engineer (with DBA & Dev Experience)
-**Primary Focus**  
-- Project planning, scheduling, and Control Account Management (CAM) functions  
-- Database and storage architecture (metadata schema, IPFS/Arweave integration, on-chain indexing)  
-- Process optimization and productivity metrics (gas-cost modeling, proof-generation throughput, hardware utilization)  
+## Systems Engineering Responsibilities Matrix (RACI)
 
-**Research Responsibilities**  
-- Support cryptographic primitives and zk components research through benchmarking and performance data collection  
-- Document leanVM mitigation approaches from a systems-integration and deployment perspective  
+| Activity | Equipment Integration Engineer | Cybersecurity Admin | Manufacturing Productivity Engineer |
+|----------|--------------------------------|---------------------|-------------------------------------|
+| Cryptographic primitives research | C | A | R |
+| zk components & leanVM mitigations | A | R | C |
+| Protocol specification authoring | C | R | A |
+| Solution architecture drafts | R | C | A |
+| Trade studies & benchmarking | C | R | A |
+| PDR package preparation | A | C | R |
 
-**Additional Duties**  
-- Lead authoring of protocol specification sections on storage, performance, and deployment  
-- Draft and maintain solution-architecture configuration baselines and interface control documents  
-- **Future Role Evolution**: May assume Control Account Manager (CAM) responsibilities (Earned Value Management, cost/schedule variance tracking) starting Phase 2.
+**Legend**: R = Responsible, A = Accountable, C = Consulted
 
+**Governance Note**: The IPT operates under a single Systems Engineering Management Plan (SEMP). Weekly Technical Interchange Meetings (TIMs) and monthly Risk & Opportunity Reviews ensure alignment with project baselines.
 ## Systems-Engineering Practices Used
 - **CONOPS** – High-level Concept of Operations document (see `02-architecture…md`)  
 - **Requirements Allocation Matrix** – Maintained in `/spec/requirements.md`  
