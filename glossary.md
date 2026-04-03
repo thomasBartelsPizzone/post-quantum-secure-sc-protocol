@@ -17,8 +17,8 @@
 | **Coq**                     | Interactive theorem prover and formal verification tool (used alongside Lean 4 for proving circuit correctness). |
 
 ## E–G <a id="e-g"></a>
-| Term                  | Full Form / Explanation |
-|-----------------------|-------------------------|
+| Term / Acronym              | Full Form / Definition |
+|-----------------------------|------------------------|
 | **ERC**                     | Ethereum Request for Comments – official Ethereum improvement proposal standards (e.g., ERC-721, ERC-1155, ERC-4337). |
 | **ERC-721**                 | Ethereum standard for Non-Fungible Token. |
 | **ERC-1155**                | Ethereum standard for Multi-token standard (fungible + non-fungible). |
@@ -32,8 +32,8 @@
 | **Gas**                     | Unit of computational cost on Ethereum; determines transaction fees. |
 
 ## H–L <a id="h-l"></a>
-| Term                  | Full Form / Explanation |
-|-----------------------|-------------------------|
+| Term / Acronym              | Full Form / Definition |
+|-----------------------------|------------------------|
 | **HSMs**                    | Hardware Security Modules – physical devices for secure key generation and storage; PQ-ready versions required. |
 | **ICD**                     | Interface Control Document – systems-engineering artifact defining interfaces between subsystems. |
 | **IPFS**                    | InterPlanetary File System – content-addressed decentralized storage for NFT assets. |
@@ -43,8 +43,8 @@
 | **liboqs**                  | Open Quantum Safe library – reference implementation of NIST post-quantum algorithms (FIPS 203/204/205). |
 
 ## M–O <a id="m-o"></a>
-| Term                  | Full Form / Explanation |
-|-----------------------|-------------------------|
+| Term / Acronym              | Full Form / Definition |
+|-----------------------------|------------------------|
 | **MVI**                     | Modular Verifier Interface – design pattern allowing seamless swap between SP1/RISC Zero today and native leanVM tomorrow). |
 | **ML-DSA**                  | Module-Lattice-based Digital Signature Algorithm (FIPS 204). |
 | **ML-KEM**                  | Module-Lattice-based Key Encapsulation Mechanism (FIPS 203). |
@@ -53,8 +53,8 @@
 | **On-Chain Gas**            | Gas consumed by on-chain operations (e.g., zk-STARK verification and NFT minting). |
 
 ## P–R <a id="p-r"></a>
-| Term                  | Full Form / Explanation |
-|-----------------------|-------------------------|
+| Term / Acronym              | Full Form / Definition |
+|-----------------------------|------------------------|
 | **PDR**                     | Preliminary Design Review – systems-engineering gate review. |
 | **Poseidon2**               | Arithmetic, zk-friendly hash function optimized for RISC-V zkVM circuits; used instead of SHA-3 inside proofs. |
 | **PQ**                      | Post-Quantum – cryptography resistant to quantum computers. |
@@ -63,8 +63,8 @@
 | **RISC Zero / SP1**         | Production-grade RISC-V zkVM implementations used today (2026-04-03) as bridge until native leanVM is available. |
 
 ## S–Z <a id="s-z"></a>
-| Term                  | Full Form / Explanation |
-|-----------------------|-------------------------|
+| Term / Acronym              | Full Form / Definition |
+|-----------------------------|------------------------|
 | **SEMP**                    | Systems Engineering Management Plan (governs the entire IPT). |
 | **SLH-DSA**                 | Stateless Hash-based Digital Signature Algorithm (FIPS 205). |
 | **SP1**                     | Succinct’s high-performance RISC-V zkVM (used today as leanVM bridge). |
