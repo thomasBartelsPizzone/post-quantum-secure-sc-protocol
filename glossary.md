@@ -35,6 +35,7 @@
 | Term / Acronym              | Full Form / Definition |
 |-----------------------------|------------------------|
 | **HSMs**                    | Hardware Security Modules – physical devices for secure key generation and storage; PQ-ready versions required. |
+| **Holesky**                 | Ethereum testnet used alongside Sepolia for smart-contract deployments, gas benchmarking, and security audits in the PQ-NFT-USG project. |
 | **ICD**                     | Interface Control Document – systems-engineering artifact defining interfaces between subsystems. |
 | **IPFS**                    | InterPlanetary File System – content-addressed decentralized storage for NFT assets. |
 | **L2**                      | Layer 2 – scaling solution built on top of Ethereum (e.g., Base, Arbitrum). |
@@ -66,11 +67,13 @@
 | Term / Acronym              | Full Form / Definition |
 |-----------------------------|------------------------|
 | **SEMP**                    | Systems Engineering Management Plan (governs the entire IPT). |
+| **Sepolia**                 | Primary Ethereum L2-compatible testnet used for early protocol testing, ERC-721/4337 minting, and leanVM bridge validation (mentioned throughout Phase 1–4 deliverables). |
 | **SLH-DSA**                 | Stateless Hash-based Digital Signature Algorithm (FIPS 205). |
 | **SP1**                     | Succinct’s high-performance RISC-V zkVM (used today as leanVM bridge). |
 | **SNARK**                   | Succinct Non-interactive Argument of Knowledge (zk proof system; contrast with STARK). |
 | **SRD**                     | Systems Requirements Definition. |
 | **STARK**                   | Scalable Transparent Argument of Knowledge – quantum-resistant, transparent, hash-based zk-proof system (no trusted setup). |
+| **Testnet**                 | Ethereum test network used for development, testing, and pilot deployments before mainnet. Sepolia and Holesky are the primary testnets referenced for PQ-NFT-USG smart-contract deployment and zk-STARK verification testing. |
 | **TEP-62 / TEP-74**         | TON NFT / Jetton standards (equivalent to ERC-721). |
 | **TIM**                     | Technical Interchange Meeting. |
 | **TON**                     | Telegram Open Network – high-throughput blockchain evaluated as parallel deployment target. |
