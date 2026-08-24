@@ -1,120 +1,142 @@
-# PQ-NFT-USG: Post-Quantum NFT Protocol for USG Official Communications
+# PQ-SC-USG: Post-Quantum Smart Contract Protocol for USG Official Communications
 
-**Repository Purpose**  
-Production-grade, open-source protocol specification + reference implementation for issuing U.S. Government communications (press releases, speeches, troop-deployment notices, etc.) as immutable, publicly verifiable NFTs secured against both classical and quantum adversaries.
+Production-grade, open-source protocol specification and reference implementation for issuing U.S. Government communications (press releases, speeches, troop-deployment notices, and related official records) as immutable, publicly verifiable **smart-contract records** on **TON**, secured against classical and quantum adversaries.
 
-**Primary Target Chain**: Ethereum (EVM-compatible)  
-**Secondary / Alternative Chains Evaluated**: TON (Telegram Open Network), Solana, Polygon zkEVM, and custom L1 options.
+**Target chain:** TON (The Open Network)  
+**Settlement model:** TON collection and item smart contracts ([TEP-62](https://github.com/ton-blockchain/TEPs/blob/master/text/0062-nft-standard.md) unique-item interface, [TEP-64](https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md) metadata)  
+**Cryptography:** NIST FIPS 204 ML-DSA (primary signature), FIPS 205 SLH-DSA (hash-based fallback), FIPS 203 ML-KEM (attachment confidentiality)
 
----
-
-## 1. Reviewed & Polished High-Level Concept
-
-Your original vision — Ethereum-based smart contracts + NFTs for USG communications with post-quantum security via FIPS 203/204/205, zk-STARKs, and leanVM — is technically sound and aligns with Ethereum’s 2025–2026 “lean Ethereum” roadmap.
-
-### Core Protocol Name  
-**PQ-NFT-USG** – Post-Quantum NFT Protocol for USG Official Communications
-
-### Issuance Flow (Post-Quantum Native)
-1. Authorized USG signer computes SHA-3/Poseidon2 hash of the document + metadata (timestamp, classification, issuer DID).  
-2. Signs the hash offline using **FIPS 204 ML-DSA** (primary) or **FIPS 205 SLH-DSA** (fallback). **FIPS 203 ML-KEM** for hybrid encryption of attachments.  
-3. Off-chain prover (leanVM-compatible or RISC Zero/SP1 bridge) executes full PQ verification logic inside a minimal zkVM.  
-4. Generates a succinct **zk-STARK proof** attesting: signature is valid against registered PQ public-key fingerprint AND content hash matches declared metadata.  
-5. Proof + minimal metadata is submitted to the smart contract (via ERC-4337 account abstraction for PQ-native wallets).
-
-### On-Chain Protocol (Ethereum Primary)
-- NFT minting gated exclusively by successful zk-STARK proof verification.  
-- leanVM verifier (precompile or contract) checks proof in near-constant gas.  
-- TokenURI points to immutable storage (IPFS CID + Arweave backup).  
-- On-chain fields: only PQ key fingerprint, issuance epoch, proof commitment.  
-- Recursive STARK aggregation for batch issuance (e.g., all daily DoD notices in one proof).
-
-### Public Verification
-Any Ethereum light client, explorer, or wallet instantly verifies authenticity — no secret keys, no quantum-vulnerable primitives exposed on-chain.
-
-### Key Technical Mitigations
-- Never stores raw PQ signatures on-chain (avoids gas explosion).  
-- Uses leanVM’s 5-instruction RISC-V ISA + Poseidon2 for prover efficiency.  
-- Fully compatible today via RISC Zero/SP1 bridges; natively optimal once leanVM lands in 2027+.
+Layered architecture: [draft-architecture.md](draft-architecture.md)  
+Issuance flow diagram: [draft-workflow.md](draft-workflow.md)  
+Terminology: [glossary.md](glossary.md)
 
 ---
 
-## 2. Alternative Chain Approaches (Beyond Ethereum)
+## 1. Purpose
 
-We evaluated four viable alternatives. Ethereum remains the **recommended primary** due to ecosystem maturity, tooling, and USG familiarity, but the protocol is deliberately designed to be chain-agnostic at the cryptographic layer.
+PQ-SC-USG binds an official communication to a TON smart contract whose mint (issuance) is gated by a post-quantum signature check, proven off-chain and verified on-chain. Any public TON client can confirm that:
 
-| Chain          | Compatibility | Pros                                                                 | Cons                                                                 | Recommended Use Case                          | Migration Effort |
-|----------------|---------------|----------------------------------------------------------------------|----------------------------------------------------------------------|-----------------------------------------------|------------------|
-| **Ethereum (L2)** | Native (EVM + leanVM roadmap) | Mature dev tools, ERC-721/4337, huge liquidity, public auditability | Gas costs until leanVM; L2 fragmentation                     | Primary – all USG pilots                      | Baseline (0)     |
-| **TON (Telegram Open Network)** | TVM (FunC) – not EVM | Extremely cheap fees (~$0.01), async sharding (millions TPS), native high-throughput, built-in Jetton/NFT standards | No native zk-STARK/leanVM; would require custom FunC verifier or off-chain proof relay. TON’s TVM is Turing-complete but lower-level. | High-volume daily issuances (DoD notices)     | Medium (rewrite contracts in FunC + custom STARK verifier) |
-| **Solana**     | SVM (Rust)    | Sub-second finality, < $0.001 fees, native program composability     | No native zk-STARK support (requires Light Protocol or custom ZK); different account model | Real-time operational notices                 | Medium-High (Rust programs + custom ZK integration) |
-| **Polygon zkEVM / zk-rollups** | EVM-compatible | Lower fees than L1, already zk-native (Polygon zkEVM + CDK)          | Still depends on Ethereum settlement; less mature PQ roadmap     | Cost-optimized Ethereum fork                  | Low (near drop-in) |
+1. The content hash matches the declared metadata.
+2. The signature verifies against a registered U.S. Government post-quantum public-key fingerprint.
+3. The on-chain record is immutable after issuance.
 
-**TON-Specific Adaptation Path (Recommended Secondary)**  
-- Use TON’s native NFT standard (TEP-62/TEP-74) instead of ERC-721.  
-- Off-chain zk-STARK proof generation remains identical (FIPS + leanVM circuit).  
-- Submit proof via TON’s external message or oracle bridge to a FunC smart contract that verifies the STARK (or uses a lightweight validator).  
-- Advantage: TON’s async model allows 10,000+ issuances/day at negligible cost — ideal for high-frequency USG notices.  
-- Reference: TON already powers massive Telegram-based apps; adding PQ-NFT layer is feasible in 2026–2027.
-
-**Recommendation**:  
-Start with **Ethereum L2 (Base or Arbitrum)** for the pilot (maximum developer velocity and public verifiability).  
-Add **TON parallel deployment** as Phase 2 (after Ethereum MVP) for cost-sensitive, high-volume use cases. All cryptographic primitives (FIPS signatures + zk-STARK circuits) remain identical across chains.
+Raw ML-DSA / SLH-DSA signatures and ML-KEM ciphertexts are **not** stored on-chain. Only a proof commitment, key fingerprint, and issuance epoch land in the contract.
 
 ---
 
-## 3. Abstract (for proposals / whitepaper)
+## 2. Cryptographic baseline (FIPS 203 / 204 / 205)
 
-We propose PQ-NFT-USG, an efficient, chain-agnostic smart-contract protocol for issuing U.S. Government communications as post-quantum-secure NFTs. Each communication is signed offline with NIST FIPS 204 (ML-DSA) or FIPS 205 (SLH-DSA) and FIPS 203 (ML-KEM) for encryption. A leanVM-based prover generates a succinct zk-STARK proof attesting signature validity and content integrity against registered USG post-quantum public-key fingerprints. The proof is submitted to an NFT-gated smart contract (ERC-721 on Ethereum or TEP-62 on TON), which mints an immutable NFT whose metadata links to permanent off-chain storage (IPFS + Arweave). On-chain verification uses the leanVM zk-STARK verifier, delivering constant-time, quantum-resistant authentication to any public observer.
+NIST published the three primary post-quantum FIPS as **final standards on 13 August 2024**. They are the current federal baseline for quantum-resistant public-key cryptography. Implementations must use the **FIPS algorithm names and parameter-set names**, not the round-3 contest names (Kyber, Dilithium, SPHINCS+).
 
-The protocol leverages Ethereum’s leanVM roadmap (or TON’s high-throughput TVM) to keep gas/fees practical despite larger PQ key sizes. It provides tamper-proof, publicly auditable provenance for official communications while preserving forward secrecy and zero-downtime migration from current cryptography.
+NIST maintains a [PQC FIPS FAQ](https://csrc.nist.gov/projects/post-quantum-cryptography) (posted 31 January 2025). As of 31 July 2026, FIPS 204 has a published **errata / potential-updates** spreadsheet; production bindings should track those corrections when NIST issues a revision.
 
----
+### FIPS 204 — ML-DSA (primary signature)
 
-## 4. Rough Outline of Deliverables  
-**(Intent: Deliver the full protocol — not just a concept)**
+[FIPS 204](https://csrc.nist.gov/pubs/fips/204/final), *Module-Lattice-Based Digital Signature Standard*, specifies **ML-DSA**, derived from CRYSTALS-Dilithium. It is the primary algorithm for authenticating official communications.
 
-Estimated 6–9 months for a focused team (or 22–28 months part-time @ 10 h/week × 3 engineers).
+| Parameter set | NIST security category | Typical role in PQ-SC-USG |
+|---------------|------------------------|---------------------------|
+| ML-DSA-44 | Category 2 | Development / constrained pilots only |
+| ML-DSA-65 | Category 3 | Unclassified public notices when CNSA 2.0 is not required |
+| **ML-DSA-87** | Category 5 | **Default for National Security Systems (CNSA 2.0)** |
 
-1. **Protocol Specification & Architecture** (Months 1–2)  
-   - Formal spec, security model, threat analysis, leanVM/TON migration paths.  
-   - Metadata schema and governance for issuer-key registration.
+**Protocol role:** the authorized USG signer produces an ML-DSA signature over `SHA3-256(document ‖ metadata)`. Verification of that signature is the statement proven inside the zkVM. For NSS and dual-use systems that must meet CNSA 2.0, use **ML-DSA-87 only**; ML-DSA-44 and ML-DSA-65 are not CNSA 2.0 approved.
 
-2. **Cryptographic Primitives & ZK Components** (Months 2–4)  
-   - FIPS 203/204/205 bindings + zk-STARK prover (leanVM-compatible).  
-   - Recursive aggregation circuits.  
-   - Test vectors and formal security proofs.
+### FIPS 205 — SLH-DSA (stateless hash-based fallback)
 
-3. **Smart-Contract Suite & Reference Implementation** (Months 3–5)  
-   - Ethereum (Solidity) + TON (FunC) reference contracts.  
-   - Issuance CLI + video-generation-to-NFT pipeline.  
-   - Deployable on testnets today.
+[FIPS 205](https://csrc.nist.gov/pubs/fips/205/final), *Stateless Hash-Based Digital Signature Standard*, specifies **SLH-DSA**, derived from SPHINCS+. Security rests on the collision- and preimage-resistance of SHA-2 or SHAKE, **independent of lattice assumptions**.
 
-4. **Testnet Deployment & Demo Suite** (Months 5–6)  
-   - Live Ethereum L2 + TON testnet deployments.  
-   - Public verifier dashboard and sample USG feeds.
+| Family | Security target | Notes |
+|--------|-----------------|-------|
+| SLH-DSA-SHA2-{128,192,256}{s,f} | 128 / 192 / 256-bit | SHA-2 instantiations; `s` = small signature, `f` = fast signing |
+| SLH-DSA-SHAKE-{128,192,256}{s,f} | 128 / 192 / 256-bit | SHAKE instantiations |
 
-5. **Security Audit, Formal Verification & Hardening** (Months 6–7)  
-   - Two independent audits + formal verification (Lean 4/Coq).  
-   - Quantum-security analysis.
+**Protocol role:** algorithm-diversity fallback when a lattice break would be catastrophic, or when a civilian / unclassified issuer elects hash-based signatures. Signatures are much larger than ML-DSA; they remain **off-chain** and are attested by the same zk-STARK path.
 
-6. **Final Release & Handover** (Months 7–9)  
-   - Complete GitHub repo (MIT/Apache 2.0).  
-   - Documentation, integration guide, USG-adoption playbook.
+**CNSA 2.0 note:** NSA does **not** approve SLH-DSA for National Security Systems. NSS issuers use ML-DSA-87. Civilian agencies following OMB / CISA PQC guidance may still register an SLH-DSA fingerprint as a secondary algorithm.
 
----
+### FIPS 203 — ML-KEM (attachment confidentiality)
 
-## Next Steps
+[FIPS 203](https://csrc.nist.gov/pubs/fips/203/final), *Module-Lattice-Based Key-Encapsulation Mechanism Standard*, specifies **ML-KEM**, derived from CRYSTALS-Kyber. A KEM establishes a shared secret over a public channel; that secret then keys a FIPS-approved AEAD (AES-256-GCM) for attachments.
 
-- [ ] Clone this repo and review the `/spec` folder (coming in Phase 1).  
-- [ ] Choose primary chain (Ethereum L2 recommended).  
-- [ ] Run the learning plan (see `docs/phase1-learning.md`).  
+| Parameter set | NIST security category | Typical role in PQ-SC-USG |
+|---------------|------------------------|---------------------------|
+| ML-KEM-512 | Category 1 | Not used for USG production |
+| ML-KEM-768 | Category 3 | Unclassified attachment encryption when CNSA 2.0 is not required |
+| **ML-KEM-1024** | Category 5 | **Default for NSS (CNSA 2.0)** |
 
-**License**: MIT (code) + CC0 (specification)  
-**Status**: Pre-alpha specification (ready for team onboarding)  
-**Questions?** Open an issue or contact the maintainer.
+**Protocol role:** encapsulate a shared secret to the recipient’s ML-KEM public key before the attachment is placed in IPFS / Arweave. The public issuance record can remain unclassified while attachments stay confidential. Follow [NIST SP 800-227](https://csrc.nist.gov/pubs/sp/800/227/final) for KEM usage (domain separation, hybrid constructions, and binding the encapsulated key to the content hash).
+
+Production USG deployments should use **FIPS 140-3** validated modules (liboqs / vendor CMVP modules) for ML-DSA, SLH-DSA, and ML-KEM. Hybrid classical+PQ signing is allowed during transition; the on-chain proof must still attest the **PQ** signature.
 
 ---
 
-*Last updated: March 2026*  
+## 3. Issuance flow (post-quantum native)
+
+The cryptographic issuance sequence is unchanged; only the settlement interface is TON.
+
+1. An authorized USG signer computes a SHA-3-256 hash of the document plus metadata (timestamp, classification, issuer DID). Poseidon2 is used **inside** the zk circuit as the zk-friendly equivalent.
+2. The signer signs that hash **offline** with **FIPS 204 ML-DSA** (primary) or **FIPS 205 SLH-DSA** (fallback). **FIPS 203 ML-KEM** encapsulates a shared secret for hybrid encryption of attachments.
+3. An off-chain prover (RISC Zero or Succinct SP1 today; any RISC-V zkVM that emits a STARK) executes full PQ verification inside a minimal zkVM.
+4. The prover emits a succinct **zk-STARK** attesting: the signature is valid against the registered PQ public-key fingerprint **and** the content hash matches the declared metadata.
+5. Proof plus minimal metadata is submitted to the TON **issuance smart contract** as an external inbound message. The contract verifies the proof and deploys / updates the unique item contract for that communication.
+
+On-chain fields are limited to: PQ key fingerprint, issuance epoch, and proof commitment. Content URI points at IPFS (primary) with an Arweave backup.
+
+---
+
+## 4. On-chain protocol (TON)
+
+TON is the sole settlement chain. Collection and item contracts follow TEP-62; metadata follows TEP-64. New contract code is written in **Tolk** (FunC is legacy). TVM async messaging and sharding support high-volume daily notices at negligible fee.
+
+- Issuance is gated exclusively by successful zk-STARK verification in the collection / verifier contract.
+- Each official communication is a unique **item smart contract** under a USG **collection contract** (the TEP-62 unique-item pattern).
+- Recursive STARK aggregation batches many issuances (for example, all daily DoD notices) into one on-chain verify.
+- Proof submission uses TON external messages (or a thin oracle relay if the verifier is split). No Ethereum account-abstraction path is required.
+- TON testnet is the pilot network; mainnet follows audit.
+
+Public verification: any TON light client, explorer, or wallet can check the proof commitment and read the content URI. No secret keys and no quantum-vulnerable primitives are exposed on-chain.
+
+### Why TON (and only TON)
+
+- Sub-cent fees and asynchronous sharding suit high-frequency official notices.
+- Native unique-item and collection contracts (TEP-62) map cleanly to “one communication → one smart contract.”
+- Telegram-scale public reach without a second settlement chain.
+- Cryptographic artifacts (FIPS signatures, STARK proof, commitment) stay chain-local to TON; there is no parallel EVM, SVM, or zkEVM deployment.
+
+---
+
+## 5. Technical mitigations
+
+- Never store raw PQ signatures or ML-KEM ciphertexts on-chain (avoids TVM cell-size and fee blow-ups).
+- Prove ML-DSA / SLH-DSA verification inside a RISC-V zkVM; verify only the STARK on TON.
+- Modular Verifier Interface (MVI): swap RISC Zero / SP1 proof formats without changing the issuance contract ABI.
+- Poseidon2 inside the circuit; SHA-3-256 at the FIPS boundary so signed bytes match NIST-approved hashing.
+- Algorithm registry on the collection contract stores fingerprints for ML-DSA-87 (required for NSS) and optional SLH-DSA for diversity.
+
+---
+
+## 6. Abstract (for proposals / whitepaper)
+
+We propose **PQ-SC-USG**, a TON smart-contract protocol for issuing U.S. Government communications as post-quantum-secure on-chain records. Each communication is signed offline with NIST FIPS 204 (ML-DSA) or FIPS 205 (SLH-DSA); FIPS 203 (ML-KEM) protects attachments. A RISC-V zkVM prover generates a succinct zk-STARK attesting signature validity and content integrity against registered USG post-quantum public-key fingerprints. The proof is submitted to a TON issuance smart contract (TEP-62 collection / item), which records an immutable item whose metadata links to permanent off-chain storage (IPFS + Arweave). On-chain verification uses a TVM STARK verifier, delivering quantum-resistant authentication to any public observer without exposing raw post-quantum signatures on-chain.
+
+---
+
+## Documents
+
+| Document | Role |
+|----------|------|
+| [draft-architecture.md](draft-architecture.md) | Layered architecture (current baseline) |
+| [draft-workflow.md](draft-workflow.md) | Functional issuance flow |
+| [glossary.md](glossary.md) | Terms and FIPS parameter names |
+| [workflow.md](workflow.md) | Architecture infographic brief |
+| [archive/](archive/) | Historical timeline, team roles, and multi-chain notes |
+
+**License:** MIT (code) + CC0 (specification)  
+**Status:** Pre-alpha specification (TON path)  
+**Source baseline:** [Mayweather](https://github.com/thomasBartelsPizzone/Mayweather)
+
+---
+
+*Last updated: August 2026*  
 Built for U.S. Government authenticity in a post-quantum world.
