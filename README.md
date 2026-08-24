@@ -7,7 +7,7 @@ Production-grade, open-source protocol specification and reference implementatio
 **Cryptography:** NIST FIPS 204 ML-DSA (primary signature), FIPS 205 SLH-DSA (hash-based fallback), FIPS 203 ML-KEM (attachment confidentiality)
 
 Layered architecture: [draft-architecture.md](draft-architecture.md)  
-Issuance flow diagram: [draft-issuance-flow.md](draft-issuance-flow.md)  
+Issuance flow diagram: [draft-issuance-flow.md](draft-issuance-architecture.md)  
 Workflow: [workflow.md](workflow.md)  
 Terminology: [glossary.md](glossary.md)
 
