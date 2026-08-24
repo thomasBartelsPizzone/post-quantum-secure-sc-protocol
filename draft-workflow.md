@@ -1,11 +1,14 @@
-# PQ-NFT-USG Protocol Architecture
+# PQ-SC-USG Protocol Architecture
 
-**Document ID**: PQ-NFT-USG-ARCH-001  
-**Version**: Draft v0.2 (March 2026)  
-**Systems Engineering Level**: From Concept → Preliminary Design (PDR ready)  
-**Approval Status**: IPT Draft – Pending PDR Gate
+**Document ID:** PQ-SC-USG-ARCH-001  
+**Version:** Draft v0.3 (August 2026)  
+**Settlement chain:** TON only  
+**Systems Engineering Level:** Concept → Preliminary Design (PDR ready)  
+**Approval Status:** IPT Draft – Pending PDR Gate
 
-## 1. High-Level Architecture (Functional Flow)
+See also: [draft-architecture.md](draft-architecture.md)
+
+## 1. High-level architecture (functional flow)
 
 ```mermaid
 graph TD
@@ -18,26 +21,27 @@ Memo / Press Release / Video]
 
     C --> D[Compute Hash
 SHA-3-256 / Poseidon2]
-    D --> E["FIPS 203/204/205 PQ Signature
-ML-DSA primary • SLH-DSA fallback
-ML-KEM hybrid encryption"]
-    
-    E --> F[leanVM / RISC Zero / SP1 Prover
+    D --> E["FIPS 203/204/205
+ML-DSA-87 primary • SLH-DSA fallback
+ML-KEM-1024 attachment wrap"]
+
+    E --> F[RISC Zero / SP1 Prover
 RISC-V zkVM environment]
     F --> G["Succinct zk-STARK Proof
 Transparent, recursive 2-to-1 aggregation"]
-    
-    G --> H[Chain-Agnostic Proof Submission
-ERC-4337 or TVM external message]
-    H --> I[Smart Contract Verifier
-Modular verifier interface]
-    I --> J[Immutable NFT Mint
-ERC-721 / ERC-1155 or TEP-62 / TEP-74]
-    
-    J --> K[TokenURI → IPFS + Arweave Permanent Storage]
+
+    G --> H[TON External Inbound Message]
+    H --> I[Issuance Smart Contract
+TEP-62 collection verifier]
+    I --> J[Unique Item Smart Contract
+TEP-62 item + TEP-64 metadata]
+
+    J --> K[Content URI → IPFS + Arweave]
     K --> L[Public Verification Layer
-Any light client / explorer / wallet]
+Any TON light client / explorer / wallet]
 
     style A fill:#1e3a8a,stroke:#60a5fa,color:#fff
     style L fill:#166534,stroke:#4ade80,color:#fff
     style G fill:#4338ca,stroke:#a5b4fc,color:#fff
+    style I fill:#0f766e,stroke:#5eead4,color:#fff
+```
