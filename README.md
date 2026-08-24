@@ -133,8 +133,7 @@ We propose **PQ-SC-USG**, a TON smart-contract protocol for issuing U.S. Governm
 | [archive/](archive/) | Historical timeline, team roles, and multi-chain notes |
 
 **License:** MIT (code) + CC0 (specification)  
-**Status:** Pre-alpha specification (TON path)  
-**Source baseline:** [Mayweather](https://github.com/thomasBartelsPizzone/Mayweather)
+**Status:** Pre-alpha specification (TON path)
 
 ---
 
